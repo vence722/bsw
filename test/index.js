@@ -246,7 +246,9 @@ function genConfig(co_body) {
 
 describe('Testing WorkerConnection._wrapHandler', function () {
 	it('should give wrapped function', function () {
-		let worker = new WorkerConnection(genConfig(function* () {}));
+		let worker = new WorkerConnection(genConfig(function* () {
+			// nothing
+		}));
 		chai.expect(worker.handler).to.be.function;
 	});
 
@@ -277,20 +279,26 @@ describe('Testing WorkerConnection._wrapHandler', function () {
 	});
 
 	function testRunToAction(expected_action, run_description, co_run, final_callback) {
-		it(`wrapped function (${expected_action}) translated to \'${run_description}\' action`, function (done) {
+		it(`wrapped function (${expected_action}) translated to '${run_description}' action`, function (done) {
 			let client = {};
 			client.buryAsync = function () {};
 			client.destroyAsync = function () {};
 			client.releaseAsync = function () {};
 
 			let bury_stub = sinon.stub(client, 'buryAsync');
-			bury_stub.onCall(0).returns(co(function* () {}));
+			bury_stub.onCall(0).returns(co(function* () {
+				// nothing
+			}));
 
 			let destroy_stub = sinon.stub(client, 'destroyAsync');
-			destroy_stub.onCall(0).returns(co(function* () {}));
+			destroy_stub.onCall(0).returns(co(function* () {
+				// nothing
+			}));
 
 			let release_stub = sinon.stub(client, 'releaseAsync');
-			release_stub.onCall(0).returns(co(function* () {}));
+			release_stub.onCall(0).returns(co(function* () {
+				// nothing
+			}));
 
 			class Sample {
 				run(payload, job_info) {
@@ -340,7 +348,9 @@ describe('Testing WorkerConnection._wrapHandler', function () {
 	testRunToAction(
 		'no return',
 		'success',
-		function* () {},
+		function* () {
+			// nothing
+		},
 		function (action, delay, result_or_error, bury_stub, destroy_stub, release_stub, done) {
 			checkSuccess(action, destroy_stub);
 			chai.expect(delay).to.equal(null);
@@ -352,7 +362,7 @@ describe('Testing WorkerConnection._wrapHandler', function () {
 	testRunToAction(
 		'returns string',
 		'success',
-		function* () {return 'string';},
+		function* () { return 'string'; },
 		function (action, delay, result_or_error, bury_stub, destroy_stub, release_stub, done) {
 			checkSuccess(action, destroy_stub);
 			chai.expect(delay).to.equal(null);
@@ -364,7 +374,7 @@ describe('Testing WorkerConnection._wrapHandler', function () {
 	testRunToAction(
 		'returns object',
 		'success',
-		function* () {return {key: 'value'};},
+		function* () { return {key: 'value'}; },
 		function (action, delay, result_or_error, bury_stub, destroy_stub, release_stub, done) {
 			checkSuccess(action, destroy_stub);
 			chai.expect(delay).to.equal(null);
@@ -376,7 +386,7 @@ describe('Testing WorkerConnection._wrapHandler', function () {
 	testRunToAction(
 		'throw \'success\'',
 		'success',
-		function* () {throw 'success';},
+		function* () { throw 'success'; },
 		function (action, delay, result_or_error, bury_stub, destroy_stub, release_stub, done) {
 			checkSuccess(action, destroy_stub);
 			chai.expect(delay).to.equal(null);
@@ -388,7 +398,7 @@ describe('Testing WorkerConnection._wrapHandler', function () {
 	testRunToAction(
 		'return \'bury\'',
 		'bury',
-		function* () {return 'bury';},
+		function* () { return 'bury'; },
 		function (action, delay, result_or_error, bury_stub, destroy_stub, release_stub, done) {
 			checkBury(action, bury_stub);
 			chai.expect(delay).to.equal(null);
@@ -400,7 +410,7 @@ describe('Testing WorkerConnection._wrapHandler', function () {
 	testRunToAction(
 		'throw string',
 		'bury',
-		function* () {throw 'string';},
+		function* () { throw 'string'; },
 		function (action, delay, result_or_error, bury_stub, destroy_stub, release_stub, done) {
 			checkBury(action, bury_stub);
 			chai.expect(delay).to.equal(null);
@@ -412,7 +422,7 @@ describe('Testing WorkerConnection._wrapHandler', function () {
 	testRunToAction(
 		'throw object',
 		'bury',
-		function* () {throw {key: 'value'};},
+		function* () { throw {key: 'value'}; },
 		function (action, delay, result_or_error, bury_stub, destroy_stub, release_stub, done) {
 			checkBury(action, bury_stub);
 			chai.expect(delay).to.equal(null);
@@ -424,7 +434,7 @@ describe('Testing WorkerConnection._wrapHandler', function () {
 	testRunToAction(
 		'return \'release\'; no delay set',
 		'release',
-		function* () {return 'release';},
+		function* () { return 'release'; },
 		function (action, delay, result_or_error, bury_stub, destroy_stub, release_stub, done) {
 			checkRelelase(action, release_stub, 30);  // 30s default delay
 			chai.expect(delay).to.equal(30);
@@ -436,7 +446,7 @@ describe('Testing WorkerConnection._wrapHandler', function () {
 	testRunToAction(
 		'throw \'release\'; no delay set',
 		'release',
-		function* () {throw 'release';},
+		function* () { throw 'release'; },
 		function (action, delay, result_or_error, bury_stub, destroy_stub, release_stub, done) {
 			checkRelelase(action, release_stub, 30);  // 30s default delay
 			chai.expect(delay).to.equal(30);
@@ -448,7 +458,7 @@ describe('Testing WorkerConnection._wrapHandler', function () {
 	testRunToAction(
 		'return \'release\'; 60s delay',
 		'release',
-		function* () {return ['release', 60];},
+		function* () { return ['release', 60]; },
 		function (action, delay, result_or_error, bury_stub, destroy_stub, release_stub, done) {
 			checkRelelase(action, release_stub, 60);
 			chai.expect(delay).to.equal(60);
@@ -460,7 +470,7 @@ describe('Testing WorkerConnection._wrapHandler', function () {
 	testRunToAction(
 		'throw \'release\'; 60s delay',
 		'release',
-		function* () {throw ['release', 60];},
+		function* () { throw ['release', 60]; },
 		function (action, delay, result_or_error, bury_stub, destroy_stub, release_stub, done) {
 			checkRelelase(action, release_stub, 60);
 			chai.expect(delay).to.equal(60);

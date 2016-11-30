@@ -100,7 +100,7 @@ class WorkerConnection extends events.EventEmitter {
 					} catch (e) {
 						_this.emit('error', e);
 					}
-					_this.reserved_counter = _this.reserved_counter - 1;
+					_this.reserved_counter -= 1;
 				}
 			});
 		};
@@ -167,7 +167,7 @@ class WorkerConnection extends events.EventEmitter {
 				yield _this._start();
 				return;
 			} else {
-				_this.log(`client already connected, skipped`);
+				_this.log('client already connected, skipped');
 			}
 		});
 	}
@@ -234,7 +234,7 @@ class WorkerConnection extends events.EventEmitter {
 						}
 					}
 
-					_this.reserved_counter = _this.reserved_counter + 1;
+					_this.reserved_counter += 1;
 
 					try {
 						let id = res[0];  // Job Id
