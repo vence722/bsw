@@ -18,6 +18,12 @@ const config = require('./config.json');
 	const res2 = await rpc_client.call('minus', {op1: 12, op2: 5});
 	console.log(`res2: ${res2}`);
 
+	const res3 = await rpc_client.call('invalid function', {op1: 12, op2: 5});
+	console.log(`res2: ${res3}`);
+
+	const res4 = await rpc_client.call('add', {key: 'invalid'});
+	console.log(`res2: ${res4}`);
+
 	await rpc_client.stop();
 })().catch((e) => {
 	console.log(e);
